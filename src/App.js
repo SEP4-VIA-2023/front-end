@@ -1,8 +1,8 @@
-import Graph from './components/Graph.jsx';
+import Chart from './components/Chart.jsx';
 
 function App() {
   return (
-    <Graph />
+    <Chart />
   );
 }
 
