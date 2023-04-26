@@ -1,27 +1,25 @@
-import Home from "./pages/home/Home";
-import Login from "./pages/login/Login";
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
 
-
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
-
-function App() {
-  return (
-    <div className="App">
+describe('App', () => {
+  it('renders the home page by default', () => {
+    render(
       <BrowserRouter>
-        <Routes>
-        <Route path="/">
-            <Route index element={<Home />} />
-            <Route path="login" element={<Login/>} />
-          </Route>
-        </Routes>
+        <App />
       </BrowserRouter>
-    
-    </div>
-  );
-}
+    );
 
-export default App;
+    expect(screen.getByTestId('home-page')).toBeInTheDocument();
+  });
+
+  it('renders the login page when the path is /login', () => {
+    render(
+      <BrowserRouter initialEntries={['/login']}>
+        <App />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByTestId('login-page')).toBeInTheDocument();
+  });
+});

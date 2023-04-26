@@ -7,7 +7,7 @@ const Widget = ({ data }) => {
   return (
     <Box
       sx={{
-        backgroundColor: '#fff',
+        backgroundCoalor: '#fff',
         borderRadius: '12px',
         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
         display: 'flex',
