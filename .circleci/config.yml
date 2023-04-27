@@ -6,6 +6,7 @@ version: 2.1
 #branches: ["main"]
 #pull_request:
 #branches: ["main"]
+#Pull requests awaiting merging after code review will also trigger this workflow since it will be considered a push event.
 
 orbs:
   node: circleci/node@4.7
