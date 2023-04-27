@@ -10,7 +10,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="top">
         <Link to="/" style={{ textDecoration: "none" }}>
-          <span className="logo">IOT SEP4</span>
+          <span className="logo">front-end SEP4</span>
         </Link>
       </div>
       <hr />
@@ -21,7 +21,7 @@ const Sidebar = () => {
             <DashboardIcon className="icon" />
             <span>Dashboard</span>
           </li>
-          <p className="title">Graphs</p>
+          <p className="title">Graphs VIEW</p>
           <Link to="/graphs" style={{ textDecoration: "none" }}>
             <li>
               <AutoGraphIcon className="icon" />
