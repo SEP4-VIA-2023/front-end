@@ -1,0 +1,38 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7
+
+jobs:
+  test-and-build:
+    docker:
+      - image: node:16.10-alpine
+
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Run tests
+          command: npm test
+      - setup_remote_docker:
+          version: 20.10.24
+          docker_layer_caching: true
+      - run:
+          name: Install Docker CLI
+          command: apk add --no-cache docker-cli
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t latest .
+      - run:
+          name: Push Docker image
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker tag latest $DOCKER_USERNAME/devops-front-end:latest
+            docker push $DOCKER_USERNAME/devops-front-end:latest
+
+workflows:
+  sample:
+    jobs:
+      - test-and-build
