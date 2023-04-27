@@ -1,5 +1,12 @@
 version: 2.1
 
+#By default, CircleCI will run the configured workflows for every push and pull request. so this section is commented out since is only applicable to github actions.
+#on:
+#push:
+#branches: ["main"]
+#pull_request:
+#branches: ["main"]
+
 orbs:
   node: circleci/node@4.7
 
@@ -33,6 +40,13 @@ jobs:
             docker push $DOCKER_USERNAME/devops-front-end:latest
 
 workflows:
-  sample:
+  version: 2
+  github-workflow-part:
     jobs:
-      - test-and-build
+      - test-and-build:
+          context: org-global
+          #The filters section in the workflow ensures that the test-and-build job only runs for the main branch.
+          filters:
+            branches:
+              only:
+                - main
