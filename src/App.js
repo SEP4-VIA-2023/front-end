@@ -1,25 +1,22 @@
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import "./App.css";
 
-describe('App', () => {
-  it('renders the home page by default', () => {
-    render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    );
+import { HashRouter as Router, Routes, Route } from "react-router-dom"; // Changed BrowserRouter to HashRouter to work with github pages
 
-    expect(screen.getByTestId('home-page')).toBeInTheDocument();
-  });
+function App() {
+  return (
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="login" element={<Login />} />
+          </Route>
+        </Routes>
+      </Router>
+    </div>
+  );
+}
 
-  it('renders the login page when the path is /login', () => {
-    render(
-      <BrowserRouter initialEntries={['/login']}>
-        <App />
-      </BrowserRouter>
-    );
-
-    expect(screen.getByTestId('login-page')).toBeInTheDocument();
-  });
-});
+export default App;
