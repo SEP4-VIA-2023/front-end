@@ -16,19 +16,16 @@ const Sidebar = () => {
       <hr />
       <div className="center">
         <ul>
-          <p className="title">MAIN</p>
           <li>
             <DashboardIcon className="icon" />
             <span>Dashboard</span>
           </li>
-          <p className="title">Graphs VIEW</p>
           <Link to="/graphs" style={{ textDecoration: "none" }}>
             <li>
               <AutoGraphIcon className="icon" />
               <span>Graphs</span>
             </li>
           </Link>
-          <p className="title">User</p>
           <li>
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>

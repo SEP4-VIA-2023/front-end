@@ -2,6 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
+
+
+
 it("renders Sidebar component", () => {
   render(
     <HashRouter>
