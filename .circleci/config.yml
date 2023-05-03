@@ -47,7 +47,7 @@ workflows:
       - test-and-build:
           context: org-global
           #The filters section in the workflow ensures that the test-and-build job only runs for the main branch.
-          filters:
-            branches:
-              only:
-                - main
+          #filters:
+          #branches:
+          #only:
+          #- main
