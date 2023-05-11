@@ -26,10 +26,12 @@ const Sidebar = () => {
               <span>Graphs</span>
             </li>
           </Link>
-          <li>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Profile</span>
-          </li>
+          <Link to="/profile" style={{ textDecoration: "none" }}> {/* Add this line */}
+            <li>
+              <AccountCircleOutlinedIcon className="icon" />
+              <span>Profile</span>
+            </li>
+          </Link> {/* And this line */}
           <li>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
