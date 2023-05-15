@@ -127,8 +127,8 @@ const Profile = () => {
       </div>
 
       <div className="button-container">
-        <button onClick={handleDiscard}>Discard Changes</button>
-        <button onClick={handleSave}>Save Changes</button>
+        <button onClick={handleDiscard}>Discard</button>
+        <button onClick={handleSave}>Save</button>
       </div>
 
       <h2 className="chart-title">CO2 Chart</h2>
