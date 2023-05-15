@@ -7,20 +7,18 @@ function UseFormattedData(data, metricUnits) {
     const formatDate = (timestamp) => new Date(timestamp).toLocaleString();
 
     const convertData = (data, metric) => data.map(({ timestamp, temperature, humidity, co2 }) => {
-      const formattedTemperature = metric ? temperature.toFixed(1) + ' °C' : (temperature * 1.8 + 32).toFixed(1) + ' °F';
-      const formattedHumidity = metric ? humidity.toFixed(1) + ' %' : (humidity * 0.0295).toFixed(1) + ' in'; // Adjust conversion factor as needed
-      const formattedCO2 = metric ? co2.toFixed(1) + ' ppm' : (co2 * 0.001).toFixed(1) + ' kppm'; // Adjust conversion factor as needed
-
+      const formattedTemperature = metric ? temperature : (temperature * 1.8 + 32);
+      const formattedHumidity = metric ? humidity : (humidity * 0.0295); // Adjust conversion factor as needed
+      const formattedCO2 = metric ? co2 : (co2 * 0.001); // Adjust conversion factor as needed
+    
       return {
         timestamp: formatDate(timestamp),
-        humidity,
-        temperature,
-        co2,
-        formattedTemperature,
-        formattedHumidity,
-        formattedCO2,
+        humidity: formattedHumidity.toFixed(1),
+        temperature: formattedTemperature.toFixed(1),
+        co2: formattedCO2.toFixed(1),
       };
     });
+    
 
     setFormattedData(convertData(data, metricUnits));
   }, [data, metricUnits]);
