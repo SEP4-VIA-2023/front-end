@@ -21,6 +21,7 @@ it("renders Profile component with all the UI elements rendered", async () => {
     ])
   );
 
+
   render(
     <HashRouter>
       <Profile />
@@ -28,6 +29,7 @@ it("renders Profile component with all the UI elements rendered", async () => {
   );
 
   await waitForElementToBeRemoved(() => screen.getByText(/Loading.../i));
+
 
   const settingsTitle = screen.getByText(/Settings/i);
   const co2Chart = screen.getByText(/CO2 Chart/i);

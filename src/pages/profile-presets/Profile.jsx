@@ -18,6 +18,7 @@ const Profile = () => {
       });
   }, []);
 
+
   const handleChange = (event) => {
     setProfile({
       ...profile,
@@ -53,12 +54,14 @@ const Profile = () => {
     .catch((error) => {
       console.error('Error:', error);
     });
+
   };
 
   const handleSelect = (event) => {
     const selectedProfile = profiles.find(profile => profile.title === event.target.value);
     setProfile(selectedProfile);
   };
+
 
   // Only render the component if profiles have been fetched
   if (!profile) {
@@ -125,6 +128,7 @@ const Profile = () => {
           onChange={handleChange}
         />
       </div>
+
 
       <div className="button-container">
         <button onClick={handleDiscard}>Discard</button>
