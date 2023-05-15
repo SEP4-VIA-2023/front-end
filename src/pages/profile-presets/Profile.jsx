@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 const Profile = () => {
-  const profiles = [
-    { title: "Profile 1", co2: "400", humidity: "50", temperature: "20" },
-    { title: "Profile 2", co2: "500", humidity: "55", temperature: "22" },
-    // Add more profiles...
-  ];
-
-  const [profile, setProfile] = useState(profiles[0]);
+  const [profiles, setProfiles] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [co2Data, setCo2Data] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/data')
+      .then(response => response.json())
+      .then(data => {
+        setProfiles(data);
+        setProfile(data[0]); // Use the first profile as the default
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }, []);
 
   const handleChange = (event) => {
     setProfile({
@@ -30,6 +37,22 @@ const Profile = () => {
   const handleSave = () => {
     console.log("Saved: ", profile);
     setCo2Data(oldData => [...oldData, { name: profile.title, CO2: parseInt(profile.co2) }]);
+
+    fetch('http://localhost:3001/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(profile)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      setProfiles(oldProfiles => [...oldProfiles, profile]);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
   };
 
   const handleSelect = (event) => {
@@ -37,9 +60,15 @@ const Profile = () => {
     setProfile(selectedProfile);
   };
 
+  // Only render the component if profiles have been fetched
+  if (!profile) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="settings-container">
       <h2 className="settings-title">Settings</h2>
+      
       <div className="profile-selection">
         <label htmlFor="profile-select">Select Profile:</label>
         <select id="profile-select" onChange={handleSelect} value={profile.title}>
@@ -97,9 +126,9 @@ const Profile = () => {
         />
       </div>
 
-      <div className="button-group">
-        <button className="discard-button" onClick={handleDiscard}>Discard</button>
-        <button className="save-button" onClick={handleSave}>Save</button>
+      <div className="button-container">
+        <button onClick={handleDiscard}>Discard Changes</button>
+        <button onClick={handleSave}>Save Changes</button>
       </div>
 
       <h2 className="chart-title">CO2 Chart</h2>
