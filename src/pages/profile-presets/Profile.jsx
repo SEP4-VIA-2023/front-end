@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
   const [profile, setProfile] = useState(null);
@@ -27,13 +25,33 @@ const Profile = () => {
   };
 
   const handleDiscard = () => {
-    setProfile({
-      title: "",
-      co2: "",
-      humidity: "",
-      temperature: ""
+    // Remove profile from the local state
+    const remainingProfiles = profiles.filter(p => p.title !== profile.title);
+    setProfiles(remainingProfiles);
+  
+    // Check if there are remaining profiles
+    if (remainingProfiles.length > 0) {
+      // Select the first one from the remaining profiles
+      setProfile(remainingProfiles[0]);
+    } else {
+      // Set the profile state to null if no profiles are left
+      setProfile(null);
+    }
+  
+    // Delete the profile from the server
+    fetch(`http://localhost:3001/data/${profile.title}`, {
+      method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
     });
   };
+  
+
 
   const handleSave = () => {
     console.log("Saved: ", profile);
@@ -63,10 +81,13 @@ const Profile = () => {
   };
 
 
-  // Only render the component if profiles have been fetched
-  if (!profile) {
-    return <div>Loading...</div>;
-  }
+ // Only render the component if profiles have been fetched
+if (profile === null) {
+  return <div>No profiles available.</div>;
+} else if (!profile) {
+  return <div>Loading...</div>;
+}
+
 
   return (
     <div className="settings-container">
@@ -94,37 +115,73 @@ const Profile = () => {
       </div>
 
       <div className="setting-item">
-        <label htmlFor="co2-input">CO2 Set Trigger Value:</label>
+        <label htmlFor="co2-min-input">CO2 Min Value:</label>
         <input
-          id="co2-input"
+          id="co2-min-input"
           type="number"
-          placeholder="CO2 Write Value"
-          name="co2"
-          value={profile.co2}
+          placeholder="CO2 Min Value"
+          name="co2Min"
+          value={profile.co2Min || ""}
           onChange={handleChange}
         />
       </div>
 
       <div className="setting-item">
-        <label htmlFor="humidity-input">Humidity Set Trigger Value:</label>
+        <label htmlFor="co2-max-input">CO2 Max Value:</label>
         <input
-          id="humidity-input"
+          id="co2-max-input"
           type="number"
-          placeholder="Humidity Write Value"
-          name="humidity"
-          value={profile.humidity}
+          placeholder="CO2 Max Value"
+          name="co2Max"
+          value={profile.co2Max || ""}
           onChange={handleChange}
         />
       </div>
 
       <div className="setting-item">
-        <label htmlFor="temperature-input">Temperature Set Trigger Value:</label>
+        <label htmlFor="humidity-min-input">Humidity Min Value:</label>
         <input
-          id="temperature-input"
+          id="humidity-min-input"
           type="number"
-          placeholder="Temperature Write Value"
-          name="temperature"
-          value={profile.temperature}
+          placeholder="Humidity Min Value"
+          name="humidityMin"
+          value={profile.humidityMin || ""}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="setting-item">
+        <label htmlFor="humidity-max-input">Humidity Max Value:</label>
+        <input
+          id="humidity-max-input"
+          type="number"
+          placeholder="Humidity Max Value"
+          name="humidityMax"
+          value={profile.humidityMax || ""}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="setting-item">
+        <label htmlFor="temperature-min-input">Temperature Min Value:</label>
+        <input
+          id="temperature-min-input"
+          type="number"
+          placeholder="Temperature Min Value"
+          name="temperatureMin"
+          value={profile.temperatureMin || ""}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="setting-item">
+        <label htmlFor="temperature-max-input">Temperature Max Value:</label>
+        <input
+          id="temperature-max-input"
+          type="number"
+          placeholder="Temperature Max Value"
+          name="temperatureMax"
+          value={profile.temperatureMax || ""}
           onChange={handleChange}
         />
       </div>
@@ -134,16 +191,6 @@ const Profile = () => {
         <button onClick={handleDiscard}>Discard</button>
         <button onClick={handleSave}>Save</button>
       </div>
-
-      <h2 className="chart-title">CO2 Chart</h2>
-      <LineChart width={500} height={300} data={co2Data}>
-        <CartesianGrid stroke="#ccc" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="CO2" stroke="#8884d8" />
-      </LineChart>
     </div>
   );
 };
