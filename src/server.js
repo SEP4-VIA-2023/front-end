@@ -8,6 +8,21 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+//data used for the signin function in the login component
+/*
+app.get("/login-data", (req, res) => {
+  fs.readFile("./logindata.json", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      res.send(JSON.parse(data));
+    }
+  });
+});
+*/
+
+//data used for reading profile-presets
 app.get("/data", (req, res) => {
   fs.readFile("./data2.json", "utf8", (err, data) => {
     if (err) {
@@ -19,6 +34,30 @@ app.get("/data", (req, res) => {
   });
 });
 
+//data used for writiing to a temporry file for fetching using modern browser fetch
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  fs.readFile("./logindata.json", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      const users = JSON.parse(data);
+      const user = users.find(
+        (user) => user.email === email && user.password === password
+      );
+      if (user) {
+        res.send({ status: "success", message: "Login successful" });
+      } else {
+        res
+          .status(401)
+          .send({ status: "failure", message: "Invalid email or password" });
+      }
+    }
+  });
+});
+
+//data used for writing profile-presets
 app.post("/data", (req, res) => {
   const newData = req.body;
   fs.readFile("./data2.json", "utf8", (err, data) => {
