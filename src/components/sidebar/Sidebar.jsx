@@ -20,7 +20,7 @@ const Sidebar = () => {
             <DashboardIcon className="icon" />
             <span>Dashboard</span>
           </li>
-          <Link to="/graphs" style={{ textDecoration: "none" }}>
+          <Link to= "graph" style={{ textDecoration: "none" }}>
             <li>
               <AutoGraphIcon className="icon" />
               <span>Graphs</span>

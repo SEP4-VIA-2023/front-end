@@ -3,8 +3,8 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Profile from "./pages/profile-presets/Profile";
 import "./App.css";
+import { HashRouter as Router, Routes, Route } from "react-router-dom"; // Changed BrowserRouter to HashRouter to work with github pages
 
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (

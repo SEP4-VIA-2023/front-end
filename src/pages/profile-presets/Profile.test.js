@@ -1,4 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import Profile from "./Profile";
 import fetchMock from "jest-fetch-mock";
@@ -22,6 +26,7 @@ it("renders Profile component with all the UI elements rendered", async () => {
   const settingsTitle = await screen.findByText(/Settings/i);
 
   //Labels
+
   const selectProfile = screen.getByText(/Select Profile/i);
   const discardButton = screen.getByText(/Discard/i);
   const saveButton = screen.getByText(/Save/i);
