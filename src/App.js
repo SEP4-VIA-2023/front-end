@@ -1,6 +1,7 @@
 import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
-
+import Profile from "./pages/profile-presets/Profile";
 import "./App.css";
 import { HashRouter as Router, Routes, Route } from "react-router-dom"; // Changed BrowserRouter to HashRouter to work with github pages
 
@@ -10,9 +11,10 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/">
-            <Route index element={<Register />} />
-          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
     </div>

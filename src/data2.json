@@ -1,15 +1,20 @@
 [
-    {
-      "title": "Profile 1",
-      "co2": "300",
-      "humidity": "30",
-      "temperature": "20"
-    },
-    {
-      "title": "Profile 2",
-      "co2": "400",
-      "humidity": "40",
-      "temperature": "25"
-    }
-  ]
-  
+  {
+    "title": "Profile 1",
+    "co2Min": "100",
+    "co2Max": "200",
+    "humidityMin": "30",
+    "humidityMax": "70",
+    "temperatureMin": "20",
+    "temperatureMax": "30"
+  },
+  {
+    "title": "Profile 2",
+    "co2Min": "200",
+    "co2Max": "300",
+    "humidityMin": "40",
+    "humidityMax": "80",
+    "temperatureMin": "15",
+    "temperatureMax": "25"
+  }
+]
