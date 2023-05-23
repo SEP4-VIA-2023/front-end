@@ -9,7 +9,7 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/home" style={{ textDecoration: "none" }}>
           <span className="logo">front-end SEP4</span>
         </Link>
       </div>
@@ -17,21 +17,23 @@ const Sidebar = () => {
       <div className="center">
         <ul>
           <li>
-            <DashboardIcon className="icon" />
-            <span>Dashboard</span>
+            <Link to= "/home" style={{ textDecoration: "none" }}>
+              <DashboardIcon className="icon" />
+              <span>Dashboard</span>
+            </Link>
           </li>
-          <Link to= "graph" style={{ textDecoration: "none" }}>
-            <li>
+          <li>
+            <Link to= "/graph" style={{ textDecoration: "none" }}>
               <AutoGraphIcon className="icon" />
               <span>Graphs</span>
-            </li>
-          </Link>
-          <Link to="/profile" style={{ textDecoration: "none" }}> {/* Add this line */}
-            <li>
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile" style={{ textDecoration: "none" }}>
               <AccountCircleOutlinedIcon className="icon" />
               <span>Profile</span>
-            </li>
-          </Link> {/* And this line */}
+            </Link>
+          </li>
           <li>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
