@@ -2,7 +2,6 @@ import "./home.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import WidgetContainer from "../../components/widget/WidgetContainer";
 import Chart from "../../components/charts/Chart";
-import SeparateCharts from "../../components/charts/SeparateCharts";
 
 const Home = () => { 
   return (
