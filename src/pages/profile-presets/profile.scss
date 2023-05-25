@@ -1,0 +1,12 @@
+.profile {
+    display: flex;
+  
+    .sidebar {
+      flex: 1;
+      // Additional styles for the sidebar go here
+    }
+
+    .profileContainer {
+      flex: 5;  // Adjust this value to allocate more space to the profileContainer
+    }
+}

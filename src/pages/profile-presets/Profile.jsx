@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import Sidebar from "../../components/sidebar/Sidebar";
+import "./profile.scss";
+
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
   const [profile, setProfile] = useState(null);
@@ -51,8 +54,6 @@ const Profile = () => {
     });
   };
   
-
-
   const handleSave = () => {
     console.log("Saved: ", profile);
     setCo2Data(oldData => [...oldData, { name: profile.title, CO2: parseInt(profile.co2) }]);
@@ -90,7 +91,10 @@ if (profile === null) {
 
 
   return (
-    <div className="settings-container">
+      <div className="profile">
+        <Sidebar className="sidebar"/> {/* This is the sidebar component */}
+
+    <div className="profileContainer settings-container">
       <h2 className="settings-title">Settings</h2>
       
       <div className="profile-selection">
@@ -191,6 +195,7 @@ if (profile === null) {
         <button onClick={handleDiscard}>Discard</button>
         <button onClick={handleSave}>Save</button>
       </div>
+    </div>
     </div>
   );
 };
