@@ -57,6 +57,35 @@ app.post("/login", (req, res) => {
   });
 });
 
+//for signing up
+app.post("/signup", (req, res) => {
+  const { email, password } = req.body;
+  fs.readFile("./logindata.json", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      const users = JSON.parse(data);
+      const userExists = users.find((user) => user.email === email);
+      if (userExists) {
+        res.status(409).send({ status: "failure", message: "Email already exists" });
+      } else {
+        users.push({ email, password });
+        fs.writeFile("./logindata.json", JSON.stringify(users, null, 2), 'utf8', (err) => {
+          if (err) {
+            console.error(err);
+            res.status(500).send(err);
+          } else {
+            res.send({ status: "success", message: "Signup successful" });
+          }
+        });
+      }
+    }
+  });
+});
+
+
+
 //data used for writing profile-presets
 app.post("/data", (req, res) => {
   const newData = req.body;
