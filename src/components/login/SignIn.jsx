@@ -50,7 +50,7 @@ export default function SignIn() {
     .then(data => {
       if (data.status === "success") {
         console.log(data.message);
-        window.location = '/#/home'; // redirect to the home page
+        window.location = '/#/home';
       } else {
         console.error(data.message);
       }
@@ -58,7 +58,7 @@ export default function SignIn() {
     .catch(err => console.error(err));
   };
 
-  return (
+  return (  
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />

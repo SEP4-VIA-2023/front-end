@@ -14,5 +14,9 @@
   {
     "email": "test22",
     "password": "pass22"
+  },
+  {
+    "email": "",
+    "password": "test"
   }
 ]
