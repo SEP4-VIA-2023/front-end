@@ -50,8 +50,16 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.2",
+    "babel-jest": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
     "resize-observer-polyfill": "^1.5.1",
     "tailwindcss": "^3.3.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   }
 }
