@@ -6,7 +6,8 @@
     "humidityMin": "30",
     "humidityMax": "70",
     "temperatureMin": "20",
-    "temperatureMax": "30"
+    "temperatureMax": "30",
+    "servoFunction": "100"
   },
   {
     "title": "Profile 2",
@@ -15,6 +16,7 @@
     "humidityMin": "40",
     "humidityMax": "80",
     "temperatureMin": "15",
-    "temperatureMax": "25"
+    "temperatureMax": "25",
+    "servoFunction": "100"
   }
 ]

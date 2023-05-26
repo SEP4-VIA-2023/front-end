@@ -77,9 +77,35 @@ const Profile = () => {
   };
 
   const handleSelect = (event) => {
-    const selectedProfile = profiles.find(profile => profile.title === event.target.value);
+    const selectedProfileTitle = event.target.value;
+  
+    // Update the profile immediately based on selection
+    const selectedProfile = profiles.find(profile => profile.title === selectedProfileTitle);
     setProfile(selectedProfile);
+  
+    // Then fetch the selected profile's data from the server
+    fetch(`http://localhost:3001/data/${selectedProfileTitle}`)
+      .then(response => response.json())
+      .then(data => {
+        setProfile(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  
+    // Refresh all profiles
+    fetch('http://localhost:3001/data')
+      .then(response => response.json())
+      .then(data => {
+        setProfiles(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
+  
+  
+  
 
 
   // Only render the component if profiles have been fetched
@@ -190,6 +216,21 @@ const Profile = () => {
               onChange={handleChange}
             />
           </div>
+
+          <div className="setting-item">
+            <label htmlFor="servo-function">Servo Function:</label>
+            <input
+              id="servo-function"
+              type="number"
+              placeholder="Input a value between -100 and 100"
+              name="servoFunction"
+              value={profile.servoFunction || ""}
+              onChange={handleChange}
+              min="-100"
+              max="100"
+            />
+          </div>
+
 
           <div className="button-container">
             <button onClick={handleDiscard}>Discard</button>
