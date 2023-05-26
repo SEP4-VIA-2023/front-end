@@ -5,7 +5,7 @@ import "./profile.scss";
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
   const [profile, setProfile] = useState(null);
-  const [co2Data, setCo2Data] = useState([]);
+  //const [co2Data, setCo2Data] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:3001/data')
@@ -28,53 +28,90 @@ const Profile = () => {
   };
 
   const handleDiscard = () => {
-    // Remove profile from the local state
-    const remainingProfiles = profiles.filter(p => p.title !== profile.title);
-    setProfiles(remainingProfiles);
-  
-    // Check if there are remaining profiles
-    if (remainingProfiles.length > 0) {
-      // Select the first one from the remaining profiles
-      setProfile(remainingProfiles[0]);
+    // Check if only one profile remains
+    if (profiles.length <= 1) {
+      alert("Stop, you are going to remain with no profiles at all if you delete the only one you have");
     } else {
-      // Set the profile state to null if no profiles are left
-      setProfile(null);
-    }
+      // Remove profile from the local state
+      const remainingProfiles = profiles.filter(p => p.title !== profile.title);
+      setProfiles(remainingProfiles);
   
-    // Delete the profile from the server
-    fetch(`http://localhost:3001/data/${profile.title}`, {
-      method: 'DELETE',
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+      // Check if there are remaining profiles
+      if (remainingProfiles.length > 0) {
+        // Select the first one from the remaining profiles
+        setProfile(remainingProfiles[0]);
+      } else {
+        // Set the profile state to null if no profiles are left
+        setProfile(null);
+      }
+  
+      // Delete the profile from the server
+      fetch(`http://localhost:3001/data/${profile.title}`, {
+        method: 'DELETE',
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }
   };
+  
   
   const handleSave = () => {
-    console.log("Saved: ", profile);
-    setCo2Data(oldData => [...oldData, { name: profile.title, CO2: parseInt(profile.co2) }]);
-
-    fetch('http://localhost:3001/data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(profile)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      setProfiles(oldProfiles => [...oldProfiles, profile]);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-
+    // Check if profile already exists
+    const existingProfileIndex = profiles.findIndex((p) => p.title === profile.title);
+  
+    if (existingProfileIndex >= 0) {
+      // If the profile already exists, check if values are the same
+      const existingProfile = profiles[existingProfileIndex];
+      if (JSON.stringify(existingProfile) === JSON.stringify(profile)) {
+        alert("Profile with the same name and the same values already exists");
+      } else {
+        // If values are different, update the profile
+        fetch(`http://localhost:3001/data/${profile.title}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(profile)
+        })
+        .then(response => response.json())
+        .then(updatedProfile => {
+          console.log(updatedProfile);
+          // Update profile in local state
+          const updatedProfiles = [...profiles];
+          updatedProfiles[existingProfileIndex] = updatedProfile; // Use updated profile from server response
+          setProfiles(updatedProfiles);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      }
+    } else {
+      // If the profile does not exist, create a new one
+      fetch('http://localhost:3001/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(profile)
+      })
+      .then(response => response.json())
+      .then(newProfile => {
+        console.log(newProfile);
+        setProfiles(oldProfiles => [...oldProfiles, newProfile]); // Use new profile from server response
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }
   };
+  
+  
+  
 
   const handleSelect = (event) => {
     const selectedProfileTitle = event.target.value;
