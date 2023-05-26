@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import "./profile.scss";
@@ -5,20 +6,17 @@ import "./profile.scss";
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
   const [profile, setProfile] = useState(null);
-  //const [co2Data, setCo2Data] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/data')
-      .then(response => response.json())
-      .then(data => {
-        setProfiles(data);
-        setProfile(data[0]); // Use the first profile as the default
+    axios.get('http://localhost:3001/data')
+      .then(response => {
+        setProfiles(response.data);
+        setProfile(response.data[0]);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error:', error);
       });
   }, []);
-
 
   const handleChange = (event) => {
     setProfile({
@@ -28,130 +26,69 @@ const Profile = () => {
   };
 
   const handleDiscard = () => {
-    // Check if only one profile remains
     if (profiles.length <= 1) {
       alert("Stop, you are going to remain with no profiles at all if you delete the only one you have");
     } else {
-      // Remove profile from the local state
-      const remainingProfiles = profiles.filter(p => p.title !== profile.title);
-      setProfiles(remainingProfiles);
-  
-      // Check if there are remaining profiles
-      if (remainingProfiles.length > 0) {
-        // Select the first one from the remaining profiles
-        setProfile(remainingProfiles[0]);
-      } else {
-        // Set the profile state to null if no profiles are left
-        setProfile(null);
-      }
-  
-      // Delete the profile from the server
-      fetch(`http://localhost:3001/data/${profile.title}`, {
-        method: 'DELETE',
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+      axios.delete(`http://localhost:3001/data/${profile.title}`)
+        .then(response => {
+          console.log(response.data);
+          const remainingProfiles = profiles.filter(p => p.title !== profile.title);
+          setProfiles(remainingProfiles);
+
+          if (remainingProfiles.length > 0) {
+            setProfile(remainingProfiles[0]);
+          } else {
+            setProfile(null);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     }
   };
-  
-  
+
   const handleSave = () => {
-    // Check if profile already exists
     const existingProfileIndex = profiles.findIndex((p) => p.title === profile.title);
-  
+
     if (existingProfileIndex >= 0) {
-      // If the profile already exists, check if values are the same
       const existingProfile = profiles[existingProfileIndex];
       if (JSON.stringify(existingProfile) === JSON.stringify(profile)) {
         alert("Profile with the same name and the same values already exists");
       } else {
-        // If values are different, update the profile
-        fetch(`http://localhost:3001/data/${profile.title}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(profile)
-        })
-        .then(response => response.json())
-        .then(updatedProfile => {
-          console.log(updatedProfile);
-          // Update profile in local state
-          const updatedProfiles = [...profiles];
-          updatedProfiles[existingProfileIndex] = updatedProfile; // Use updated profile from server response
-          setProfiles(updatedProfiles);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+        axios.put(`http://localhost:3001/data/${profile.title}`, profile)
+          .then(response => {
+            console.log(response.data);
+            const updatedProfiles = [...profiles];
+            updatedProfiles[existingProfileIndex] = response.data.updatedProfile;
+            setProfiles(updatedProfiles);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
       }
     } else {
-      // If the profile does not exist, create a new one
-      fetch('http://localhost:3001/data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(profile)
-      })
-      .then(response => response.json())
-      .then(newProfile => {
-        console.log(newProfile);
-        setProfiles(oldProfiles => [...oldProfiles, newProfile]); // Use new profile from server response
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+      axios.post('http://localhost:3001/data', profile)
+        .then(response => {
+          console.log(response.data);
+          setProfiles(oldProfiles => [...oldProfiles, profile]);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     }
   };
-  
-  
-  
 
   const handleSelect = (event) => {
     const selectedProfileTitle = event.target.value;
-  
-    // Update the profile immediately based on selection
     const selectedProfile = profiles.find(profile => profile.title === selectedProfileTitle);
     setProfile(selectedProfile);
-  
-    // Then fetch the selected profile's data from the server
-    fetch(`http://localhost:3001/data/${selectedProfileTitle}`)
-      .then(response => response.json())
-      .then(data => {
-        setProfile(data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  
-    // Refresh all profiles
-    fetch('http://localhost:3001/data')
-      .then(response => response.json())
-      .then(data => {
-        setProfiles(data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
   };
-  
-  
-  
 
-
-  // Only render the component if profiles have been fetched
   if (profile === null) {
     return <div>No profiles available.</div>;
   } else if (!profile) {
     return <div>Loading...</div>;
   }
-
 
   return (
     <div className="profile">

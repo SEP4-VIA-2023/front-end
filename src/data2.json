@@ -1,22 +1,32 @@
 [
   {
     "title": "Profile 1",
-    "co2Min": "100",
+    "co2Min": "105",
     "co2Max": "200",
     "humidityMin": "30",
     "humidityMax": "70",
-    "temperatureMin": "20",
+    "temperatureMin": "25",
     "temperatureMax": "30",
     "servoFunction": "100"
   },
   {
     "title": "Profile 2",
     "co2Min": "200",
-    "co2Max": "300",
-    "humidityMin": "40",
-    "humidityMax": "80",
-    "temperatureMin": "15",
-    "temperatureMax": "25",
+    "co2Max": "302",
+    "humidityMin": "55",
+    "humidityMax": "90",
+    "temperatureMin": "75",
+    "temperatureMax": "30",
+    "servoFunction": "100"
+  },
+  {
+    "title": "Profile 3",
+    "co2Min": "200",
+    "co2Max": "302",
+    "humidityMin": "55",
+    "humidityMax": "90",
+    "temperatureMin": "75",
+    "temperatureMax": "30",
     "servoFunction": "100"
   }
 ]

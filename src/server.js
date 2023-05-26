@@ -8,6 +8,61 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.get("/data/:title", (req, res) => {
+  const title = req.params.title;
+
+  fs.readFile("./data2.json", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      let existingData = JSON.parse(data);
+      const profile = existingData.find((profile) => profile.title === title);
+
+      if (profile) {
+        res.send(profile);
+      } else {
+        res.status(404).send({ status: "Profile not found" });
+      }
+    }
+  });
+});
+
+app.put("/data/:title", (req, res) => {
+  const title = req.params.title;
+  const newData = req.body;
+
+  fs.readFile("./data2.json", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      let existingData = JSON.parse(data);
+      const index = existingData.findIndex(
+        (profile) => profile.title === title
+      );
+
+      if (index > -1) {
+        existingData[index] = newData;
+        fs.writeFile(
+          "./data2.json",
+          JSON.stringify(existingData, null, 2),
+          (err) => {
+            if (err) {
+              console.error(err);
+              res.status(500).send(err);
+            } else {
+              res.send({ status: "success", updatedProfile: newData });
+            }
+          }
+        );
+      } else {
+        res.status(404).send({ status: "Profile not found" });
+      }
+    }
+  });
+});
+
 app.get("/data", (req, res) => {
   fs.readFile("./data2.json", "utf8", (err, data) => {
     if (err) {
