@@ -9,7 +9,6 @@ const Graph = () => {
       <div className="graphContainer">
         <div>
           <SeparateCharts />
-          hello
         </div>
       </div>
     </div>

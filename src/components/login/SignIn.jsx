@@ -14,20 +14,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit">Sep4 Group 1</Link> {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
@@ -58,20 +44,6 @@ export default function SignIn() {
     } catch (e) {
       console.error('There has been a problem with your fetch operation: ' + e.message);
     }
-// After successful login and token storage
-
-    const token = localStorage.getItem('token');
-
-const apiClient = axios.create({
-  baseURL: 'https://backend-esqp5xwphq-od.a.run.app/api/measurements',
-  headers: {
-    'Authorization': `Bearer ${token}`
-  }
-});
-
-apiClient.get('/')
-  .then(response => console.log(response.data))
-  .catch(error => console.error(error));
      
   }
   return (  
@@ -132,14 +104,13 @@ apiClient.get('/')
             </Button>
             <Grid container>
               <Grid item>
-                <Link href="/#/SignUpP" variant="body2">
+                <Link href="/SignUpP" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );

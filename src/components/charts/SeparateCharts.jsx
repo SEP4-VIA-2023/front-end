@@ -2,7 +2,7 @@
 import { YAxis } from 'recharts';
 
 // Reuse these imports from the original code
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LineChart,
   Line,
@@ -18,9 +18,9 @@ import {
   Paper,
   Grid,
 } from '@material-ui/core';
+import axios from 'axios';
 
 // Local imports
-import data from '../../data.json';
 import useFormattedData from './UseFormattedData';
 import UnitSelector from './UnitSelector';
 
@@ -54,13 +54,13 @@ const IndividualChart = ({ dataKey, color, title, data }) => (
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <XAxis dataKey="timestamp" stroke="#444" />
+          <XAxis dataKey="time" stroke="#444" />
           <YAxis />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip />
           <Legend />
           <Line type="monotone" dataKey={dataKey} stroke={color} activeDot={{ r: 8 }} />
-          <Brush dataKey="timestamp" height={30} stroke="#8884d8" />
+          <Brush dataKey="time" height={30} stroke="#8884d8" />
         </LineChart>
       </ResponsiveContainer>
     </Paper>
@@ -69,20 +69,50 @@ const IndividualChart = ({ dataKey, color, title, data }) => (
 
 const SeparateCharts = () => {
   const [metricUnits, setMetricUnits] = useState(true);
-  const chartData = useFormattedData(data, metricUnits);
+  const [chartData, setChartData] = useState([]);
 
   const handleUnitChange = (event) => {
     setMetricUnits(event.target.value === 'metric');
   };
+
+  useEffect(() => {
+    const fetchMeasurements = async () => {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        console.error('No token found, please login first');
+        return;
+      }
+
+      const apiClient = axios.create({
+        baseURL: 'https://backend-esqp5xwphq-od.a.run.app/api/measurements',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      try {
+        const response = await apiClient.get('/');
+        setChartData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMeasurements();
+  }, []);
+
+  // Process `chartData` with `useFormattedData` and `metricUnits` here
+  const formattedData = useFormattedData(chartData, metricUnits);
 
   return (
     <Grid container spacing={3} justifyContent="center" style={styles.container}>
       <Grid item xs={12}>
         <UnitSelector metricUnits={metricUnits} handleUnitChange={handleUnitChange} />
       </Grid>
-      <IndividualChart dataKey="humidity" color="#3f51b5" title="Humidity" data={chartData} />
-      <IndividualChart dataKey="temperature" color="#f50057" title="Temperature" data={chartData} />
-      <IndividualChart dataKey="co2" color="#4caf50" title="CO2 Levels" data={chartData} />
+      <IndividualChart dataKey="humidity" color="#3f51b5" title="Humidity" data={formattedData} />
+      <IndividualChart dataKey="temperature" color="#f50057" title="Temperature" data={formattedData} />
+      <IndividualChart dataKey="co2" color="#4caf50" title="CO2 Levels" data={formattedData} />
     </Grid>
   );
 };

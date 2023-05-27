@@ -12,59 +12,76 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit">
-        Sep4 Group 1
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const theme = createTheme();
-
 export default function SignUp() {
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#556cd6',
+      },
+      secondary: {
+        main: '#19857b',
+      },
+      error: {
+        main: '#ff1744',
+      },
+      background: {
+        default: '#fff',
+      },
+    },
+  });
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (password !== confirmPassword) {
-      setPasswordError(true);
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-    const payload = {
-      name: data.get('name'),
-      email: data.get('email'),
-      password: password,
-    };
-
-    try {
-      const response = await fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log(data.message);
-        window.location = '/'; // redirect to the home page
-      } else {
-        console.error(data.message);
-      }
-    } catch(err) {
-      console.error(err);
-    }
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
   };
+
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  if (password !== confirmPassword) {
+    setPasswordError(true);
+  }
+  if (!validateEmail(email)) {
+    setEmailError(true);
+    return;
+  }
+  const data = new FormData(event.currentTarget);
+  const payload = {
+    name: data.get('name'),
+    email: data.get('email'),
+    password: password,
+  };
+
+  try {
+    const response = await fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log(data.message);
+      window.location = '/'; // redirect to the home page
+    } else {
+      console.error(data.message);
+      if (data.message === "User with that email exists") {
+        setEmailError(true);
+      }
+    }
+  } catch(err) {
+    console.error(err);
+  }
+};
+
 
 
   return (
@@ -106,6 +123,10 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  error={emailError}
+                  helperText={emailError ? "Invalid email format!" : ""}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -148,14 +169,13 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
