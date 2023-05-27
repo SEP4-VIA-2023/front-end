@@ -18,7 +18,6 @@ const checkAuth = () => {
 // This is our new Authenticated component
 const Authenticated = () => {
   const navigate = useNavigate();
-
   React.useEffect(() => {
     if (!checkAuth()) {
       navigate("/");

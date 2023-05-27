@@ -1,4 +1,5 @@
 import * as React from "react";
+import axios from 'axios';
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -31,7 +32,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const payload = {
@@ -39,35 +40,39 @@ export default function SignIn() {
       password: data.get('password'),
     };
   
-
-    fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.text();
-    })
-    .then(data => {
-      const token = data; 
-      if(token) {
-        console.log("Login successful");
-        localStorage.setItem('token', token); 
-        window.location = '/home';
+    try {
+      const response = await axios.post("https://backend-esqp5xwphq-od.a.run.app/api/user/login", payload);
+      
+      if (response.status === 200 || response.status === 201) { // Accept 201 as successful status code
+        const token = response.data;
+        if(token) {
+          console.log("Login successful");
+          localStorage.setItem('token', token); 
+          window.location = '/home';
+        } else {
+          console.error("Invalid email or password");
+        }
       } else {
-        console.error("Invalid email or password");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    })
-    .catch(e => {
+    } catch (e) {
       console.error('There has been a problem with your fetch operation: ' + e.message);
-    });
-    
-  
+    }
+// After successful login and token storage
+
+    const token = localStorage.getItem('token');
+
+const apiClient = axios.create({
+  baseURL: 'https://backend-esqp5xwphq-od.a.run.app/api/measurements',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
+apiClient.get('/')
+  .then(response => console.log(response.data))
+  .catch(error => console.error(error));
+     
   }
   return (  
     <ThemeProvider theme={theme}>
