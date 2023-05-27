@@ -1,7 +1,8 @@
-import axios from 'axios';
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import "./profile.scss";
+import axios from 'axios';
+
 
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
