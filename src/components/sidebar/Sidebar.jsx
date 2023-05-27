@@ -16,7 +16,7 @@ function Sidebar(props) {
   };
 
   const logout = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     navigate("/");
   };
 

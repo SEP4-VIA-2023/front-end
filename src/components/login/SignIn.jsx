@@ -58,7 +58,7 @@ export default function SignIn() {
       if(token) {
         console.log("Login successful");
         localStorage.setItem('token', token); 
-        window.location = '/#/home';
+        window.location = '/home';
       } else {
         console.error("Invalid email or password");
       }
