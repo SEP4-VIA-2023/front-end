@@ -6,17 +6,26 @@ const Widget = ({ data }) => {
 
   return (
     <Box
-      sx={{
-        backgroundCoalor: '#fff',
-        borderRadius: '12px',
-        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: '16px',
-        width: '80%',
-        height: '100px', // Change the height to fit the chart
-      }}
+    sx={{
+      backgroundColor: '#fff',
+      borderRadius: '12px',
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '50px',
+      width: '100%',
+      height: 'auto',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+      transition: 'all 0.3s ease',
+      ':hover': {
+          boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.15)',
+      },
+  }}
+  
+
     >
       <Typography variant="h5">
         {new Date(timestamp).toLocaleTimeString()}
