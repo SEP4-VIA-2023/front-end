@@ -1,13 +1,5 @@
 version: 2.1
 
-#By default, CircleCI will run the configured workflows for every push and pull request. so this section is commented out since is only applicable to github actions.
-#on:
-#push:
-#branches: ["main"]
-#pull_request:
-#branches: ["main"]
-#Pull requests awaiting merging after code review will also trigger this workflow since it will be considered a push event.
-
 orbs:
   node: circleci/node@4.7
 
@@ -20,6 +12,16 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
+      - run:
+          name: Start server
+          command: |
+            cd src
+            node server.js
+            cd ..
+          background: true
+      - run:
+          name: Wait for the server to start
+          command: sleep 30
       - run:
           name: Run tests
           command: npm test
@@ -46,8 +48,3 @@ workflows:
     jobs:
       - test-and-build:
           context: org-global
-          #The filters section in the workflow ensures that the test-and-build job only runs for the main branch.
-          #filters:
-          #branches:
-          #only:
-          #- main
