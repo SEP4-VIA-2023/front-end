@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -27,13 +28,43 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    if (password !== confirmPassword) {
+      setPasswordError(true);
+      return;
+    }
     const data = new FormData(event.currentTarget);
-    console.log({
+    const payload = {
+      firstName: data.get('firstName'),
+      lastName: data.get('lastName'),
       email: data.get('email'),
-      password: data.get('password'),
-    });
+      password: password,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3001/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      
+      if (data.status === "success") {
+        console.log(data.message);
+        window.location = '/'; // redirect to the home page
+      } else {
+        console.error(data.message);
+      }
+    } catch(err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -96,6 +127,24 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  error={passwordError}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  error={passwordError}
+                  helperText={passwordError ? "Passwords do not match!" : ""}
                 />
               </Grid>
             </Grid>
