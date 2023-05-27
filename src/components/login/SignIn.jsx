@@ -38,26 +38,37 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     };
+  
 
-    fetch("http://localhost:3001/login", {
+    fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.text();
+    })
     .then(data => {
-      if (data.status === "success") {
-        console.log(data.message);
+      const token = data; 
+      if(token) {
+        console.log("Login successful");
+        localStorage.setItem('token', token); 
         window.location = '/#/home';
       } else {
-        console.error(data.message);
+        console.error("Invalid email or password");
       }
     })
-    .catch(err => console.error(err));
-  };
-
+    .catch(e => {
+      console.error('There has been a problem with your fetch operation: ' + e.message);
+    });
+    
+  
+  }
   return (  
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -115,11 +126,6 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link href="/#/SignUpP" variant="body2">
                   {"Don't have an account? Sign Up"}
