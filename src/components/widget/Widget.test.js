@@ -1,35 +1,42 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Widget from './Widget';
 
-describe('Widget', () => {
-  it('renders the widget component with the provided data', () => {
-    const data = {
-      timestamp: new Date().getTime(),
-      humidity: 50,
-      temperature: 25,
-      co2: 800,
-    };
-    render(<Widget data={data} />);
+describe("Widget component", () => {
+  const mockData = {
+    time: new Date().toISOString(),
+    humidity: 60,
+    temperature: 25,
+    co2: 400
+  };
 
-    const timestamp = screen.getByText(
-      new Date(data.timestamp).toLocaleTimeString()
-    );
-    expect(timestamp).toBeInTheDocument();
+  it("displays the time in 24hr format", () => {
+    render(<Widget data={mockData} />);
+    const timeElement = screen.getByText(/(\d{2}:\d{2}:\d{2})/);
+    expect(timeElement).toBeInTheDocument();
+  });
 
-    const humidity = screen.getByText('Humidity:');
-    expect(humidity).toBeInTheDocument();
-    const humidityValue = screen.getByText(`${data.humidity}%`);
-    expect(humidityValue).toBeInTheDocument();
 
-    const temperature = screen.getByText('Temperature:');
-    expect(temperature).toBeInTheDocument();
-    const temperatureValue = screen.getByText(`${data.temperature}°C`);
-    expect(temperatureValue).toBeInTheDocument();
+  it("displays the humidity value", () => {
+    render(<Widget data={mockData} />);
+    const humidityElement = screen.getByText(/Humidity:/);
+    const humidityValueElement = screen.getByText(`${mockData.humidity}%`);
+    expect(humidityElement).toBeInTheDocument();
+    expect(humidityValueElement).toBeInTheDocument();
+  });
 
-    const co2 = screen.getByText('CO2:');
-    expect(co2).toBeInTheDocument();
-    const co2Value = screen.getByText(`${data.co2}ppm`);
-    expect(co2Value).toBeInTheDocument();
+  it("displays the temperature value", () => {
+    render(<Widget data={mockData} />);
+    const temperatureElement = screen.getByText(/Temperature:/);
+    const temperatureValueElement = screen.getByText(`${mockData.temperature}°C`);
+    expect(temperatureElement).toBeInTheDocument();
+    expect(temperatureValueElement).toBeInTheDocument();
+  });
+
+  it("displays the CO2 value", () => {
+    render(<Widget data={mockData} />);
+    const co2Element = screen.getByText(/CO2:/);
+    const co2ValueElement = screen.getByText(`${mockData.co2}ppm`);
+    expect(co2Element).toBeInTheDocument();
+    expect(co2ValueElement).toBeInTheDocument();
   });
 });

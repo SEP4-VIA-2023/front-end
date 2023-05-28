@@ -1,13 +1,24 @@
 .graph {
-    display: flex;
-  
-    .graphContainer {
-      flex: 6;
-  
-      .widgets {
-        display: flex;
-        padding: 20px;
-        gap: 20px;
-      }
+  display: flex;
+  padding: 80px;
+
+  .graphContainer {
+    flex: 6;
+
+    .widgets {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
     }
   }
+
+  
+@media (max-width: 768px) {
+  flex-direction: column;
+  padding: 20px;
+
+  .graphContainer {
+    flex: unset;
+  }
+}
+}

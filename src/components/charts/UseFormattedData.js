@@ -4,21 +4,18 @@ function UseFormattedData(data, metricUnits) {
   const [formattedData, setFormattedData] = useState([]);
 
   useEffect(() => {
-    const formatDate = (timestamp) => new Date(timestamp).toLocaleString();
+    const formatDate = (time) => new Date(time).toLocaleString();
 
-    const convertData = (data, metric) => data.map(({ timestamp, temperature, humidity, co2 }) => {
+    const convertData = (data, metric) => data.map(({ time, temperature, humidity, co2 }) => {
       const formattedTemperature = metric ? temperature : (temperature * 1.8 + 32);
-      const formattedHumidity = metric ? humidity : (humidity * 0.0295); // Adjust conversion factor as needed
-      const formattedCO2 = metric ? co2 : (co2 * 0.001); // Adjust conversion factor as needed
-    
+
       return {
-        timestamp: formatDate(timestamp),
-        humidity: formattedHumidity.toFixed(1),
+        time: formatDate(time),
+        humidity: humidity,
         temperature: formattedTemperature.toFixed(1),
-        co2: formattedCO2.toFixed(1),
+        co2: co2,
       };
     });
-    
 
     setFormattedData(convertData(data, metricUnits));
   }, [data, metricUnits]);

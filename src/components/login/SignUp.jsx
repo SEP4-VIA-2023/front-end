@@ -1,3 +1,4 @@
+// Importing necessary libraries and components for the application
 import * as React from 'react';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -12,61 +13,92 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit">
-        Sep4 Group 1
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+// Define the application's theme colors
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#556cd6',
+    },
+    secondary: {
+      main: '#19857b',
+    },
+    error: {
+      main: '#ff1744',
+    },
+    background: {
+      default: '#fff',
+    },
+  },
+});
 
-const theme = createTheme();
-
+// SignUp component
 export default function SignUp() {
+  // Defining states for password, confirm password and email
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+  // Defining states for password and email errors
   const [passwordError, setPasswordError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
+  // Function to validate email
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (password !== confirmPassword) {
-      setPasswordError(true);
+    // Check if passwords match
+    setPasswordError(password !== confirmPassword);
+    // Validate email
+    if (!validateEmail(email)) {
+      setEmailError(true);
       return;
     }
+
+    // Prepare data for API call
     const data = new FormData(event.currentTarget);
     const payload = {
-      firstName: data.get('firstName'),
-      lastName: data.get('lastName'),
+      name: data.get('name'),
       email: data.get('email'),
       password: password,
     };
 
-    try {
-      const response = await fetch("http://localhost:3001/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-      
-      if (data.status === "success") {
-        console.log(data.message);
-        window.location = '/'; // redirect to the home page
-      } else {
-        console.error(data.message);
-      }
-    } catch(err) {
-      console.error(err);
-    }
-  };
+  try {
+    const response = await fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
+    // Check if the response is valid JSON
+    let data;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      data = await response.json();
+    } else {
+      data = await response.text();
+    }
+
+    if (response.ok) {
+      console.log(data.message);
+      window.location = '/'; // redirect to the home page
+    } else {
+      if (data === "User with that email exists") {
+        setEmailError(true);
+        alert("User with that email exists");
+      }
+    }
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+  // Render the SignUp form
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -87,25 +119,16 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              {/* Input fields for name, email and passwords */}
+              <Grid item xs={12}>
                 <TextField
-                  autoComplete="given-name"
-                  name="firstName"
+                  autoComplete="name"
+                  name="name"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
+                  id="name"
+                  label="Name"
                   autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -116,6 +139,10 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  error={emailError}
+                  helperText={emailError ? "Invalid email format!" : ""}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -158,14 +185,13 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );

@@ -8,6 +8,61 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+
+// Handle the active profile feature
+let activeProfile = null; // Global variable to store active profile
+
+app.post("/activeProfile", (req, res) => {
+  const profile = req.body;
+
+  fs.readFile("./data2.json", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      const existingProfiles = JSON.parse(data);
+      const doesExist = existingProfiles.some(
+        (existingProfile) => existingProfile.title === profile.title
+      );
+
+      if (!doesExist) {
+        res.status(404).send({ status: "Profile not found" });
+        return;
+      }
+
+      activeProfile = profile;
+
+      // Write active profile to disk
+      fs.writeFile(
+        "./activeProfile.json",
+        JSON.stringify(activeProfile, null, 2),
+        (err) => {
+          if (err) {
+            console.error(err);
+            res.status(500).send(err);
+          } else {
+            res.send({ status: "success", activeProfile: profile });
+          }
+        }
+      );
+    }
+  });
+});
+
+app.get("/activeProfile", (req, res) => {
+  fs.readFile("./activeProfile.json", "utf8", (err, data) => {
+    if (err) {
+      // If the active profile doesn't exist, respond with a 404 status
+      res.status(404).send({ status: "No active profile" });
+    } else {
+      // If the active profile exists, send it in the response
+      const activeProfile = JSON.parse(data);
+      res.send(activeProfile);
+    }
+  });
+});
+
+// Rest of the routes
 app.get("/data/:title", (req, res) => {
   const title = req.params.title;
 
@@ -44,6 +99,7 @@ app.put("/data/:title", (req, res) => {
 
       if (index > -1) {
         existingData[index] = newData;
+
         fs.writeFile(
           "./data2.json",
           JSON.stringify(existingData, null, 2),
@@ -76,6 +132,7 @@ app.get("/data", (req, res) => {
 
 app.post("/data", (req, res) => {
   const newData = req.body;
+
   fs.readFile("./data2.json", "utf8", (err, data) => {
     if (err) {
       console.error(err);
@@ -83,6 +140,7 @@ app.post("/data", (req, res) => {
     } else {
       let existingData = JSON.parse(data);
       existingData.push(newData);
+
       fs.writeFile(
         "./data2.json",
         JSON.stringify(existingData, null, 2),
@@ -114,6 +172,7 @@ app.delete("/data/:title", (req, res) => {
 
       if (index > -1) {
         existingData.splice(index, 1);
+
         fs.writeFile(
           "./data2.json",
           JSON.stringify(existingData, null, 2),

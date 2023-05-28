@@ -1,4 +1,5 @@
 import * as React from "react";
+import axios from 'axios';
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,51 +14,39 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit">Sep4 Group 1</Link> {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const payload = {
       email: data.get('email'),
       password: data.get('password'),
     };
-
-    fetch("http://localhost:3001/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "success") {
-        console.log(data.message);
-        window.location = '/#/home';
+  
+    try {
+      const response = await axios.post("https://backend-esqp5xwphq-od.a.run.app/api/user/login", payload);
+      
+      if (response.status === 200 || response.status === 201) { // Accept 201 as successful status code
+        const token = response.data;
+        if(token) {
+          console.log("Login successful");
+          localStorage.setItem('token', token); 
+          window.location = '/home';
+        } else {
+          console.error("Invalid email or password");
+        }
       } else {
-        console.error(data.message);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    })
-    .catch(err => console.error(err));
-  };
-
+    } catch (e) {
+      console.error('There has been a problem with your fetch operation: ' + e.message);
+      alert("There is no email or password matching the ones you entered");
+    }
+     
+  }
   return (  
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -115,20 +104,14 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="/#/SignUpP" variant="body2">
+                <Link href="/SignUpP" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );

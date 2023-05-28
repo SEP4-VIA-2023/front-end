@@ -1,3 +1,32 @@
+/*button active css*/
+.button.active {
+  font-family: Arial, sans-serif;
+  margin-top: 8px;
+  background-color: #4caf50; /* Green color */
+  color: white; /* Text color */
+  border-radius: 4px; /* Rounded corners */
+  padding: 8px 16px; /* Adjust padding as needed */
+  border: none; /* Remove border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add box shadow */
+  transition: background-color 0.3s ease; /* Smooth transition */
+
+  /* Material UI elevation effect */
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+              0 1px 5px 0 rgba(0, 0, 0, 0.12),
+              0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+.button.active:hover {
+  background-color: #388e3c; /* Darker green color on hover */
+}
+
+.button.active:focus {
+  outline: none; /* Remove focus outline */
+}
+
+
+
+
 .profile {
     display: flex;
     font-family: Arial, sans-serif;
@@ -18,6 +47,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 50px;
   }
   
   .profileContainer {

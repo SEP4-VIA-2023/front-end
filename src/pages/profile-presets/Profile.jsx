@@ -3,11 +3,15 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import "./profile.scss";
 import axios from 'axios';
 
-
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
   const [profile, setProfile] = useState(null);
-
+  const [activeProfile, setActiveProfile] = useState(null);
+  const handleChange = (event) => {
+  const { name, value } = event.target;
+    setProfile(prevProfile => ({ ...prevProfile, [name]: value }));
+  };
+  
   useEffect(() => {
     axios.get('http://localhost:3001/data')
       .then(response => {
@@ -17,14 +21,18 @@ const Profile = () => {
       .catch(error => {
         console.error('Error:', error);
       });
+  
+      
+    // Fetch the active profile
+    axios.get('http://localhost:3001/activeProfile')
+      .then(response => {
+        setActiveProfile(response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   }, []);
-
-  const handleChange = (event) => {
-    setProfile({
-      ...profile,
-      [event.target.name]: event.target.value,
-    });
-  };
+  
 
   const handleDiscard = () => {
     if (profiles.length <= 1) {
@@ -85,6 +93,18 @@ const Profile = () => {
     setProfile(selectedProfile);
   };
 
+  const handleActivate = (profileToActivate) => {
+    setActiveProfile(profileToActivate);
+
+    axios.post('http://localhost:3001/activeProfile', profileToActivate)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+
   if (profile === null) {
     return <div>No profiles available.</div>;
   } else if (!profile) {
@@ -93,7 +113,7 @@ const Profile = () => {
 
   return (
     <div className="profile">
-      <Sidebar className="sidebar" /> {/* This is the sidebar component */}
+      <Sidebar className="sidebar" />
 
       <div className="settings-container">
         <div className="profileContainer">
@@ -103,9 +123,16 @@ const Profile = () => {
             <label htmlFor="profile-select">Select Profile:</label>
             <select id="profile-select" onChange={handleSelect} value={profile.title}>
               {profiles.map((profile, index) => (
-                <option key={index} value={profile.title}>{profile.title}</option>
+                <option key={index} value={profile.title}>
+                  {profile.title}{profile.title === activeProfile?.title ? " (Active)" : ""}
+                </option>
               ))}
             </select>
+            <button
+            onClick={() => handleActivate(profile)}
+            className={`button ${profile.title === activeProfile?.title ? "active" : ""}`}>
+              Activate
+            </button>
           </div>
 
           <div className="setting-item">
@@ -205,7 +232,6 @@ const Profile = () => {
               max="100"
             />
           </div>
-
 
           <div className="button-container">
             <button onClick={handleDiscard}>Discard</button>
