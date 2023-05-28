@@ -57,7 +57,21 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
+  width: 100px;
+  height: 36px;
+  box-sizing: border-box;
 }
+
+
+.profileButtons .addButton {
+  background-color: #2196f3;
+  color: #fff;
+}
+
+.profileButtons .addButton:hover {
+  background-color: #1976d2;
+}
+
 
 .profileButtons .discardButton {
   background-color: #f44336;

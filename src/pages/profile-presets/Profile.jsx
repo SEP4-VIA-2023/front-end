@@ -3,6 +3,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import axios from 'axios';
 import "./profile.scss";
 
+//constants
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
   const [profile, setProfile] = useState(null);
@@ -10,16 +11,24 @@ const Profile = () => {
   
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setProfile(prevProfile => ({ ...prevProfile, [name]: value }));
+    console.log(`handleChange event - name: ${name}, value: ${value}`); // Added log
+    setProfile(prevProfile => {
+      const updatedProfile = { ...prevProfile, [name]: value };
+      console.log('Updated profile in handleChange:', updatedProfile); // Added log
+      return updatedProfile;
+    });
   };
 
+  //connects to backend and gets all profiles following the structure under it, since this is what the backend returns
   useEffect(() => {
+    console.log('useEffect triggered'); // Added log
     axios.get('https://backend-esqp5xwphq-od.a.run.app/api/presets/1', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
       .then(response => {
+        console.log('Axios get response:', response.data); // Added log
         setProfiles(response.data);
         setProfile(response.data[0]);
       })
@@ -28,37 +37,64 @@ const Profile = () => {
       });
   }, []);
 
-  const createNewProfile = () => ({
-    id: 0,
-    name: null,
-    minHumidity: 0,
-    maxHumidity: 0,
-    minCo2: 0,
-    maxCo2: 0,
-    minTemperature: 0,
-    maxTemperature: 0,
-    servo: -100,
-    deviceId: 1,
-    device: null
-  });
+  const createNewProfile = () => {
+    console.log('Creating new profile'); // Added log
+    return {
+      id: 0,
+      name: '',
+      minHumidity: 0,
+      maxHumidity: 0,
+      minCo2: 0,
+      maxCo2: 0,
+      minTemperature: 0,
+      maxTemperature: 0,
+      servo: -100,
+      deviceId: 1,
+      device: null
+    };
+  };
 
+  //Handles the add of a new profile to the backend
+  const handleAdd = () => {
+    if (!profile) return;
+    const newProfile = { ...profile };
+    axios.post('https://backend-esqp5xwphq-od.a.run.app/api/presets/create', newProfile, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(response => {
+        const addedProfile = response.data;
+        setProfiles(oldProfiles => [...oldProfiles, addedProfile]);
+        setProfile(addedProfile);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+  
+  //Handles the save to the backend
   const handleSave = () => {
+    console.log('Saving profile:', profile); // Added log
     // if profile is null, create a new profile
     if (!profile) {
       setProfile(createNewProfile());
       return;
     }
-  
+
+    // Here we create a copy of the profile object to ensure that it has the most recent changes
+    const profileToUpdate = {...profile};
+
     const existingProfileIndex = profiles.findIndex((p) => p.id === profile.id);
   
     if (existingProfileIndex >= 0) { // The profile already exists, so we should update it
-      axios.put(`https://backend-esqp5xwphq-od.a.run.app/api/presets/${profile.id}`, profile, {
+      axios.put(`https://backend-esqp5xwphq-od.a.run.app/api/presets/${profile.id}`, profileToUpdate, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
         .then(response => {
-          console.log(response.data);
+          console.log('Axios put response:', response.data); // Added log
           const updatedProfile = response.data;
           const updatedProfiles = profiles.map(p => p.id === updatedProfile.id ? updatedProfile : p);
           setProfiles(updatedProfiles);
@@ -68,13 +104,13 @@ const Profile = () => {
           console.error('Error:', error);
         });
     } else { // The profile does not exist, so we should create it
-      axios.post('https://backend-esqp5xwphq-od.a.run.app/api/presets/create', profile, {
+      axios.post('https://backend-esqp5xwphq-od.a.run.app/api/presets/create', profileToUpdate, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
         .then(response => {
-          console.log(response.data);
+          console.log('Axios post response:', response.data); // Added log
           const newProfile = response.data;
           setProfiles(oldProfiles => [...oldProfiles, newProfile]);
           setProfile(newProfile);
@@ -85,18 +121,24 @@ const Profile = () => {
     }
   };
 
+  //Handles the selecting from the backend using a dropdown menu
   const handleSelect = (event) => {
     const selectedProfileId = parseInt(event.target.value);
+    console.log(`handleSelect event - selected profile id: ${selectedProfileId}`); // Added log
     const selectedProfile = profiles.find(profile => profile.id === selectedProfileId);
     setProfile(selectedProfile);
   };
 
+  //Handles the activation of the profile, should send the id of the profile to the backend
   const handleActivate = (profileToActivate) => {
+    console.log('Activating profile:', profileToActivate); // Added log
     setActiveProfile(profileToActivate);
     // TODO: send to backend when we have the endpoint
   };
 
+  //Handles the deletion of the profile, should request the deletion from the backend on the same endpoint as the GET
   const handleDiscard = () => {
+    console.log('Discard button clicked'); // Added log
     // TODO: send to backend when we have the endpoint
   };
   
@@ -221,13 +263,16 @@ const Profile = () => {
             </div>
           </div>
           <div className="profileButtons">
-            <button className="discardButton" onClick={handleDiscard}>
-              Discard
-            </button>
-            <button className="saveButton" onClick={handleSave}>
-              Save
-            </button>
-          </div>
+        <button className="discardButton" onClick={handleDiscard}>
+          Discard
+        </button>
+        <button className="saveButton" onClick={handleSave}>
+          Save
+        </button>
+        <button className="addButton" onClick={handleAdd}>
+          Add
+        </button>
+      </div>
         </div>
       </div>
     </div>
