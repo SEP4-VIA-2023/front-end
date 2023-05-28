@@ -66,32 +66,37 @@ export default function SignUp() {
       password: password,
     };
 
-    // POST request to server to create new user
-    try {
-      const response = await fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
+  try {
+    const response = await fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-      // If server responds with a success, redirect to homepage
-      if (response.ok) {
-        console.log(data.message);
-        window.location = '/';
-      } else {
-        console.error(data.message);
-        // If server responds with an error, check if it's because the email already exists
-        if (data.message === "User with that email exists") {
-          setEmailError(true);
-        }
-      }
-    } catch(err) {
-      console.error(err);
+    // Check if the response is valid JSON
+    let data;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      data = await response.json();
+    } else {
+      data = await response.text();
     }
-  };
+
+    if (response.ok) {
+      console.log(data.message);
+      window.location = '/'; // redirect to the home page
+    } else {
+      if (data === "User with that email exists") {
+        setEmailError(true);
+        alert("User with that email exists");
+      }
+    }
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   // Render the SignUp form
   return (

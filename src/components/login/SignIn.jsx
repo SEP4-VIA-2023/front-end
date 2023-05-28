@@ -43,6 +43,7 @@ export default function SignIn() {
       }
     } catch (e) {
       console.error('There has been a problem with your fetch operation: ' + e.message);
+      alert("There is no email or password matching the ones you entered");
     }
      
   }
