@@ -1,30 +1,41 @@
+// Importing required libraries and components
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import { AppBar, Box, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import { Dashboard as DashboardIcon, Menu as MenuIcon, AutoGraph as AutoGraphIcon, AccountCircleOutlined as AccountCircleOutlinedIcon, ExitToApp as ExitToAppIcon } from '@mui/icons-material';
 
+// Define the width of the drawer
 const drawerWidth = 240;
 
 function Sidebar(props) {
+  // Props destructuring for cleaner code
   const { window } = props;
+  
+  // Use navigate from react-router for navigation
   const navigate = useNavigate();
+
+  // State for mobile view drawer
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
+  // Function to handle the drawer state for mobile view
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  // Function to handle logout
   const logout = () => {
-    localStorage.removeItem('token');
-    navigate("/");
+    localStorage.removeItem('token'); // Clear the token from local storage
+    navigate("/"); // Navigate to home page
   };
 
+  // Sidebar drawer with list of options
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
+        {/* Mapping through the list of options */}
         {[
           { text: 'Dashboard', icon: <DashboardIcon />, path: "/home" },
           { text: 'Graphs', icon: <AutoGraphIcon />, path: "/graph" },
@@ -43,6 +54,7 @@ function Sidebar(props) {
 
   const container = window !== undefined ? () => window().document.body : undefined;
 
+  // Return the main Sidebar component
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -73,13 +85,14 @@ function Sidebar(props) {
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="Sidebar navigation"
       >     
+        {/* Temporary Drawer for mobile view */}
         <Drawer
           container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true,
+            keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
@@ -88,6 +101,7 @@ function Sidebar(props) {
         >
           {drawer}
         </Drawer>
+        {/* Permanent Drawer for desktop view */}
         <Drawer
           variant="permanent"
           sx={{
@@ -99,6 +113,7 @@ function Sidebar(props) {
           {drawer}
         </Drawer>
       </Box>
+      {/* Main content area */}
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
@@ -109,8 +124,10 @@ function Sidebar(props) {
   );
 }
 
+// Prop types validation
 Sidebar.propTypes = {
   window: PropTypes.func,
 };
 
+// Export Sidebar component
 export default Sidebar;

@@ -1,3 +1,4 @@
+// Importing necessary libraries and components for the application
 import * as React from 'react';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -12,78 +13,87 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-export default function SignUp() {
-
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#556cd6',
-      },
-      secondary: {
-        main: '#19857b',
-      },
-      error: {
-        main: '#ff1744',
-      },
-      background: {
-        default: '#fff',
-      },
+// Define the application's theme colors
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#556cd6',
     },
-  });
+    secondary: {
+      main: '#19857b',
+    },
+    error: {
+      main: '#ff1744',
+    },
+    background: {
+      default: '#fff',
+    },
+  },
+});
 
+// SignUp component
+export default function SignUp() {
+  // Defining states for password, confirm password and email
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
+  // Defining states for password and email errors
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
 
+  // Function to validate email
   const validateEmail = (email) => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   };
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  if (password !== confirmPassword) {
-    setPasswordError(true);
-  }
-  if (!validateEmail(email)) {
-    setEmailError(true);
-    return;
-  }
-  const data = new FormData(event.currentTarget);
-  const payload = {
-    name: data.get('name'),
-    email: data.get('email'),
-    password: password,
+  // Function to handle form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // Check if passwords match
+    setPasswordError(password !== confirmPassword);
+    // Validate email
+    if (!validateEmail(email)) {
+      setEmailError(true);
+      return;
+    }
+
+    // Prepare data for API call
+    const data = new FormData(event.currentTarget);
+    const payload = {
+      name: data.get('name'),
+      email: data.get('email'),
+      password: password,
+    };
+
+    // POST request to server to create new user
+    try {
+      const response = await fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      // If server responds with a success, redirect to homepage
+      if (response.ok) {
+        console.log(data.message);
+        window.location = '/';
+      } else {
+        console.error(data.message);
+        // If server responds with an error, check if it's because the email already exists
+        if (data.message === "User with that email exists") {
+          setEmailError(true);
+        }
+      }
+    } catch(err) {
+      console.error(err);
+    }
   };
 
-  try {
-    const response = await fetch("https://backend-esqp5xwphq-od.a.run.app/api/user/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-
-    if (response.ok) {
-      console.log(data.message);
-      window.location = '/'; // redirect to the home page
-    } else {
-      console.error(data.message);
-      if (data.message === "User with that email exists") {
-        setEmailError(true);
-      }
-    }
-  } catch(err) {
-    console.error(err);
-  }
-};
-
-
-
+  // Render the SignUp form
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -104,6 +114,7 @@ const handleSubmit = async (event) => {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+              {/* Input fields for name, email and passwords */}
               <Grid item xs={12}>
                 <TextField
                   autoComplete="name"

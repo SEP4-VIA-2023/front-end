@@ -1,51 +1,24 @@
-// Additional third-party library imports
-import { YAxis } from 'recharts';
-
-// Reuse these imports from the original code
+// Import third-party libraries
 import React, { useState, useEffect } from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Brush,
-} from 'recharts';
-import {
-  Typography,
-  Paper,
-  Grid,
-} from '@material-ui/core';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from 'recharts';
+import { Typography, Paper, Grid } from '@material-ui/core';
 import axios from 'axios';
 
-// Local imports
+// Import local components and hooks
 import useFormattedData from './UseFormattedData';
 import UnitSelector from './UnitSelector';
 
-// Styles
+// Define the component's styles
 const styles = {
-    container: {
-      margin: 'auto',
-      maxWidth: '800px',
-    },
-    paper: {
-      boxShadow: '0px 0px 10px #d9d9d9',
-    },
-    content: {
-      padding: '24px',
-    },
-    title: {
-      fontWeight: 'bold',
-      color: '#3f51b5',
-    },
-  };
-  
-  
+  container: { margin: 'auto', maxWidth: '800px' },
+  paper: { boxShadow: '0px 0px 10px #d9d9d9' },
+  content: { padding: '24px' },
+  title: { fontWeight: 'bold', color: '#3f51b5' },
+};
 
+// Component for individual charts
 const IndividualChart = ({ dataKey, color, title, data }) => (
-<Grid item xs={12} md={12}>
+  <Grid item xs={12} md={12}>
     <Paper elevation={3} style={styles.paper}>
       <div style={styles.content}>
         <Typography variant="h6" align="center" gutterBottom style={styles.title}>
@@ -67,30 +40,35 @@ const IndividualChart = ({ dataKey, color, title, data }) => (
   </Grid>
 );
 
+// Main component to render the separate charts
 const SeparateCharts = () => {
   const [metricUnits, setMetricUnits] = useState(true);
   const [chartData, setChartData] = useState([]);
 
-  const handleUnitChange = (event) => {
-    setMetricUnits(event.target.value === 'metric');
-  };
+  const handleUnitChange = event => setMetricUnits(event.target.value === 'metric');
 
   useEffect(() => {
     const fetchMeasurements = async () => {
       const token = localStorage.getItem('token');
 
+      // Ensure token is available
       if (!token) {
         console.error('No token found, please login first');
         return;
       }
 
+      // Base URL should be in environment variables for better environment-dependent configuration
+      const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://backend-esqp5xwphq-od.a.run.app/api/measurements';
+      
+      // Create API client with the base URL and token
       const apiClient = axios.create({
-        baseURL: 'https://backend-esqp5xwphq-od.a.run.app/api/measurements',
+        baseURL: BASE_URL,
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
+      // Fetch and set data
       try {
         const response = await apiClient.get('/');
         setChartData(response.data);
@@ -102,7 +80,6 @@ const SeparateCharts = () => {
     fetchMeasurements();
   }, []);
 
-  // Process `chartData` with `useFormattedData` and `metricUnits` here
   const formattedData = useFormattedData(chartData, metricUnits);
 
   return (
