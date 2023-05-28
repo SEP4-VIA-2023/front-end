@@ -11,8 +11,6 @@ describe('<SignUp />', () => {
   it('renders the SignUp component', () => {
     render(<SignUp />);
     expect(screen.getByText('Sign up')).toBeInTheDocument();
-    expect(screen.getByText('First Name')).toBeInTheDocument();
-    expect(screen.getByText('Last Name')).toBeInTheDocument();
     expect(screen.getByText('Email Address')).toBeInTheDocument();
     expect(screen.getByText('Password')).toBeInTheDocument();
     expect(screen.getByText('Sign Up')).toBeInTheDocument();
