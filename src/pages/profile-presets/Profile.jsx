@@ -41,7 +41,7 @@ const Profile = () => {
       });
   }, []);
   
-
+  //Maches the expected structure for a new profile to be made with what the backend has, id, deviceId, isActive, and device are hardcoded values for each new profile due to how backend handles the data
   const createNewProfile = (name, minHumidity, maxHumidity, minCo2, maxCo2, minTemperature, maxTemperature, servo) => {
     console.log('Creating new profile');
     return {
@@ -81,7 +81,8 @@ const Profile = () => {
         },
       })
       .then(() => {
-        // Refetch the profiles after a successful create
+
+        // Refetches the profiles after a successful create of one while does not expect a response from the server
         axios
           .get("https://backend-esqp5xwphq-od.a.run.app/api/presets/1", {
             headers: {
@@ -105,10 +106,6 @@ const Profile = () => {
       });
   };
   
-  
-  
-  
-
   //Handles the save to the backend
   const handleSave = () => {
     console.log('Saving profile:', profile);
@@ -155,8 +152,6 @@ const Profile = () => {
     }
   };
   
-  
-
   //Handles the selecting from the backend using a dropdown menu
   const handleSelect = (event) => {
     const selectedProfileId = parseInt(event.target.value);
@@ -165,7 +160,7 @@ const Profile = () => {
     const selectedProfile = profiles.find((profile) => profile.id === selectedProfileId);
     setProfile(selectedProfile);
   
-    // Update the activeProfile state based on the isActive property
+    // Updatees the activeProfile state based on the isActive property
     setActiveProfile(selectedProfile && selectedProfile.isActive ? selectedProfile : null);
   };
   
@@ -182,6 +177,7 @@ const Profile = () => {
     .then(response => {
       console.log('Profile activated successfully:', response.data);
       setProfiles((oldProfiles) => {
+
         // Update the isActive property of the activated profile
         const updatedProfiles = oldProfiles.map(profile => {
           if (profile.id === profileToActivate.id) {
@@ -196,7 +192,6 @@ const Profile = () => {
       console.error('Error activating profile:', error);
     });
   };
-  
   
 
   //Handles the deletion of the profile, should request the deletion from the backend on the same endpoint as the GET
@@ -219,7 +214,7 @@ const Profile = () => {
         setProfiles(remainingProfiles);
         
         if (remainingProfiles.length > 0) {
-          setProfile(remainingProfiles[0]);  // sets the first profile from the remaining profiles
+          setProfile(remainingProfiles[0]);  //condition to set the first profile from the remaining profiles xd(will work with this)
         } else {
           setProfile(null);
         }
