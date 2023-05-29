@@ -66,15 +66,15 @@ function Sidebar(props) {
         }}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, ...(mobileOpen && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
+        <IconButton
+  color="inherit"
+  aria-label="open drawer"
+  edge="start"
+  onClick={handleDrawerToggle}
+  sx={{ mr: 2, display: { xs: 'block', sm: 'none' } }} // Hide the IconButton on viewports larger than 'sm'
+>
+  <MenuIcon />
+</IconButton>
           <Typography variant="h6" noWrap component="div">
             Sep4 Group 1
           </Typography>
