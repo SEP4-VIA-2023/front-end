@@ -105,7 +105,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
             <Grid item>
-              <Link to="#/SignUpP"> {"Don't have an account? Sign Up"} </Link>
+              <Link to="/#/SignUpP"> {"Don't have an account? Sign Up"} </Link>
             </Grid>
           </Grid>
           </Box>
