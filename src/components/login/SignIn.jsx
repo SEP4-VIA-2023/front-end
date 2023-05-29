@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import axios from 'axios';
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -14,10 +14,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-
 const theme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -34,7 +35,7 @@ export default function SignIn() {
         if(token) {
           console.log("Login successful");
           localStorage.setItem('token', token); 
-          window.location = '/#/home';
+          navigate('/home'); // use navigate instead of window.location
         } else {
           console.error("Invalid email or password");
         }
@@ -47,6 +48,7 @@ export default function SignIn() {
     }
      
   }
+  
   return (  
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -104,10 +106,10 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-            <Grid item>
-              <Link to="/#/SignUpP"> {"Don't have an account? Sign Up"} </Link>
+              <Grid item>
+                <Link to="/SignUpP"> {"Don't have an account? Sign Up"} </Link>
+              </Grid>
             </Grid>
-          </Grid>
           </Box>
         </Box>
       </Container>
