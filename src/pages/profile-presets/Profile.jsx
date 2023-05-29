@@ -28,14 +28,19 @@ const Profile = () => {
         }
       })
       .then(response => {
-        console.log('Axios get response:', response.data);  
-        setProfiles(response.data);
-        setProfile(response.data[0]);
+        console.log('Axios get response:', response.data);
+  
+        const fetchedProfiles = response.data;
+        setProfiles(fetchedProfiles);
+  
+        const activeProfile = fetchedProfiles.find(profile => profile.isActive);
+        setProfile(activeProfile || fetchedProfiles[0]);
       })
       .catch(error => {
         console.error('Error:', error);
       });
   }, []);
+  
 
   const createNewProfile = (name, minHumidity, maxHumidity, minCo2, maxCo2, minTemperature, maxTemperature, servo) => {
     console.log('Creating new profile');
@@ -50,6 +55,7 @@ const Profile = () => {
       maxTemperature: maxTemperature,
       servo: servo,
       deviceId: 1,
+      isActive: false,
       device: null
     };
   };
@@ -155,16 +161,43 @@ const Profile = () => {
   const handleSelect = (event) => {
     const selectedProfileId = parseInt(event.target.value);
     console.log(`handleSelect event - selected profile id: ${selectedProfileId}`);
+    
     const selectedProfile = profiles.find((profile) => profile.id === selectedProfileId);
     setProfile(selectedProfile);
+  
+    // Update the activeProfile state based on the isActive property
+    setActiveProfile(selectedProfile && selectedProfile.isActive ? selectedProfile : null);
   };
+  
 
   //Handles the activation of the profile, should send the id of the profile to the backend
   const handleActivate = (profileToActivate) => {
     console.log('Activating profile:', profileToActivate);
-    setActiveProfile(profileToActivate);
-    // TODO: send to backend when we have the endpoint
+  
+    axios.put(`https://backend-esqp5xwphq-od.a.run.app/api/presets/activate/${profileToActivate.id}`, null, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => {
+      console.log('Profile activated successfully:', response.data);
+      setProfiles((oldProfiles) => {
+        // Update the isActive property of the activated profile
+        const updatedProfiles = oldProfiles.map(profile => {
+          if (profile.id === profileToActivate.id) {
+            return { ...profile, isActive: true };
+          }
+          return { ...profile, isActive: false };
+        });
+        return updatedProfiles;
+      });
+    })
+    .catch(error => {
+      console.error('Error activating profile:', error);
+    });
   };
+  
+  
 
   //Handles the deletion of the profile, should request the deletion from the backend on the same endpoint as the GET
   const handleDiscard = () => {
@@ -218,17 +251,22 @@ const Profile = () => {
         <div className="profileSelection">
             <label htmlFor="profileSelect">Select Profile:</label>
             <select
-              id="profileSelect"
-              className="profileSelect"
-              onChange={handleSelect}
-              value={profile.id}
-            >
-            {profiles.map((profile) => (
-            <option key={profile.id} value={profile.id}>
-              {profile.name}
-            </option>
-            ))}
-            </select>
+  id="profileSelect"
+  className="profileSelect"
+  onChange={handleSelect}
+  value={profile.id}
+>
+  {profiles.map((profile) => (
+    <option
+      key={profile.id}
+      value={profile.id}
+      className={profile.isActive ? "active" : ""}
+    >
+      {profile.name} {profile.isActive ? "(Active)" : ""}
+    </option>
+  ))}
+</select>
+
             <button
               className={`activateButton ${profile.id === activeProfile?.id ? "active" : ""}`}
               onClick={() => handleActivate(profile)}
