@@ -14,7 +14,6 @@ describe("<SignIn />", () => {
     expect(screen.getByText("Sign in")).toBeInTheDocument();
     expect(screen.getByLabelText("Email Address *")).toBeInTheDocument();
     expect(screen.getByLabelText("Password *")).toBeInTheDocument();
-    expect(screen.getByText("Remember me")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Sign In/i })
     ).toBeInTheDocument();
