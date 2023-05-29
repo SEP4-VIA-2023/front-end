@@ -1,0 +1,10 @@
+{
+  "title": "Profile 1",
+  "co2Min": "105",
+  "co2Max": "200",
+  "humidityMin": "30",
+  "humidityMax": "70",
+  "temperatureMin": "25",
+  "temperatureMax": "30",
+  "servoFunction": "100"
+}

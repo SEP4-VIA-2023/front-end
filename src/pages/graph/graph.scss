@@ -12,13 +12,30 @@
     }
   }
 
-  
-@media (max-width: 768px) {
-  flex-direction: column;
-  padding: 20px;
+  /* Small tablets to large tablets: from 481px to 767px */
+  @media (max-width: 767px) and (min-width: 481px) {
+    padding: 40px;
 
-  .graphContainer {
-    flex: unset;
+    .graphContainer {
+      .widgets {
+        gap: 15px;
+      }
+    }
+  }
+
+  /* Small phones to large phones: from 320px to 480px */
+  @media (max-width: 480px) {
+    flex-direction: column;
+    padding: 20px;
+
+    .graphContainer {
+      flex: unset;
+
+      .widgets {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
   }
 }
-}
+

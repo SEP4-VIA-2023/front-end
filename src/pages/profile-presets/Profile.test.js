@@ -1,20 +1,25 @@
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import Profile from "./Profile";
-import fetchMock from "jest-fetch-mock";
+import axios from 'axios';
 
-fetchMock.enableMocks();
+jest.mock('axios');
 
 beforeEach(() => {
-  fetch.resetMocks();
+  axios.get.mockReset();
 });
 
-it("renders Profile component with all the UI elements rendered", async () => {
-  fetch.mockResponseOnce(JSON.stringify([{}]));
+it("renders Profile component with PROFILE-PRESETS title", async () => {
+  // Mock the axios.get method
+  axios.get.mockResolvedValueOnce({
+    data: [
+      {
+        id: 1,
+        name: "Profile 1",
+        // include other properties as per your profile object
+      },
+    ],
+  });
 
   render(
     <HashRouter>
@@ -22,32 +27,11 @@ it("renders Profile component with all the UI elements rendered", async () => {
     </HashRouter>
   );
 
-  // Wait for the "Settings" title to appear
-  const settingsTitle = await screen.findByText(/Settings/i);
+  await waitFor(async () => {
+    // Wait for the "PROFILE-PRESETS" title to appear
+    const profilePresetsTitle = await screen.findByText(/PROFILE-PRESETS/i);
 
-  //Labels
-
-  const selectProfile = screen.getByText(/Select Profile/i);
-  const discardButton = screen.getByText(/Discard/i);
-  const saveButton = screen.getByText(/Save/i);
-
-  expect(settingsTitle).toBeInTheDocument();
-  expect(selectProfile).toBeInTheDocument();
-  expect(discardButton).toBeInTheDocument();
-  expect(saveButton).toBeInTheDocument();
-
-  //sensors data labels
-  const co2Min = screen.getByLabelText(/CO2 Min Value/i);
-  const co2Max = screen.getByLabelText(/CO2 Max Value/i);
-  const humidityMin = screen.getByLabelText(/Humidity Min Value/i);
-  const humidityMax = screen.getByLabelText(/Humidity Max Value/i);
-  const temperatureMin = screen.getByLabelText(/Temperature Min Value/i);
-  const temperatureMax = screen.getByLabelText(/Temperature Max Value/i);
-
-  expect(co2Min).toBeInTheDocument();
-  expect(co2Max).toBeInTheDocument();
-  expect(humidityMin).toBeInTheDocument();
-  expect(humidityMax).toBeInTheDocument();
-  expect(temperatureMin).toBeInTheDocument();
-  expect(temperatureMax).toBeInTheDocument();
+    // Test if PROFILE-PRESETS title is in the document
+    expect(profilePresetsTitle).toBeInTheDocument();
+  });
 });

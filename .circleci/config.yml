@@ -12,16 +12,16 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
-      - run:
-          name: Start server
-          command: |
-            cd src
-            node server.js
-            cd ..
-          background: true
-      - run:
-          name: Wait for the server to start
-          command: sleep 30
+      # - run:
+      #     name: Start server
+      #     command: |
+      #       cd src
+      #       node server.js
+      #       cd ..
+      #     background: true
+      # - run:
+      #     name: Wait for the server to start
+      #     command: sleep 30
       - run:
           name: Run tests
           command: npm test

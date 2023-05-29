@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+import { Link } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -34,7 +34,7 @@ export default function SignIn() {
         if(token) {
           console.log("Login successful");
           localStorage.setItem('token', token); 
-          window.location = '/home';
+          window.location = '/#/home';
         } else {
           console.error("Invalid email or password");
         }
@@ -104,12 +104,10 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item>
-                <Link href="/SignUpP" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
+            <Grid item>
+              <Link to="/#/SignUpP"> {"Don't have an account? Sign Up"} </Link>
             </Grid>
+          </Grid>
           </Box>
         </Box>
       </Container>
