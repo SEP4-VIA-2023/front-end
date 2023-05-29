@@ -5,9 +5,8 @@ import Profile from "./pages/profile-presets/Profile";
 import Graph from "./pages/graph/Graph";
 import SignUpP from "./pages/signup/Signup";
 import "./App.css";
-
 import { Outlet, useNavigate } from "react-router-dom";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom"; //Had to modify this again to work with github pages xd
 
 // Here we will check if user is logged in or not
 const checkAuth = () => {
