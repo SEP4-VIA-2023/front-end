@@ -68,20 +68,37 @@ const Profile = () => {
       profile.servo
     );
   
-    axios.post("https://backend-esqp5xwphq-od.a.run.app/api/presets/create", newProfile, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((response) => {
-        const addedProfile = response.data;
-        setProfiles((oldProfiles) => [...oldProfiles, addedProfile]);
-        setProfile(addedProfile); // Set the newly created profile as the current profile
+    axios
+      .post("https://backend-esqp5xwphq-od.a.run.app/api/presets/create", newProfile, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then(() => {
+        // Refetch the profiles after a successful create
+        axios
+          .get("https://backend-esqp5xwphq-od.a.run.app/api/presets/1", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+          .then((response) => {
+            console.log("Axios get response:", response.data);
+            setProfiles(response.data);
+            const newlyCreatedProfile = response.data.find(
+              (p) => p.name === profile.name
+            );
+            setProfile(newlyCreatedProfile);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
+  
   
   
   
