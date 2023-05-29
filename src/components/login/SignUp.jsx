@@ -49,9 +49,9 @@ export default function SignUp() {
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Check if passwords match
+    // Checks if passwords match
     setPasswordError(password !== confirmPassword);
-    // Validate email
+    // Validates email
     if (!validateEmail(email)) {
       setEmailError(true);
       return;
@@ -74,7 +74,7 @@ export default function SignUp() {
       body: JSON.stringify(payload),
     });
 
-    // Check if the response is valid JSON
+    // it Checks if the response is valid JSON
     let data;
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.indexOf("application/json") !== -1) {
@@ -85,7 +85,7 @@ export default function SignUp() {
 
     if (response.ok) {
       console.log(data.message);
-      window.location = '/'; // redirect to the home page
+      window.location = '/front-end/';
     } else {
       if (data === "User with that email exists") {
         setEmailError(true);
