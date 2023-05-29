@@ -1,40 +1,40 @@
 import * as React from "react";
 import axios from 'axios';
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { Link } from 'react-router-dom';
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import { useNavigate } from 'react-router-dom'; 
+import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, createTheme, ThemeProvider } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
 
 const theme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate(); // Use the useNavigate hook
+  const [email, setEmail] = React.useState(''); // Add email state
+  const [password, setPassword] = React.useState(''); // Add password state
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+
+    if (!email || !password) {
+      console.error("Please enter email and password");
+      alert("Please enter email and password");
+      return;
+    }
+
     const payload = {
-      email: data.get('email'),
-      password: data.get('password'),
+      email,
+      password,
     };
-  
+
     try {
-      const response = await axios.post("https://backend-esqp5xwphq-od.a.run.app/api/user/login", payload);
-      
-      if (response.status === 200 || response.status === 201) { // Accept 201 as successful status code
+      const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://backend-esqp5xwphq-od.a.run.app/api/user/login';
+      const response = await axios.post(BASE_URL, payload);
+
+      if (response.status === 200 || response.status === 201) { 
         const token = response.data;
         if(token) {
           console.log("Login successful");
           localStorage.setItem('token', token); 
-          window.location = '/#/home';
+          navigate('/home'); // Use the navigate function to redirect
         } else {
           console.error("Invalid email or password");
         }
@@ -45,8 +45,9 @@ export default function SignIn() {
       console.error('There has been a problem with your fetch operation: ' + e.message);
       alert("There is no email or password matching the ones you entered");
     }
-     
   }
+  
+  // Sign in form component
   return (  
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -80,6 +81,8 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email} // Add value prop
+              onChange={(e) => setEmail(e.target.value)} // Add onChange handler
             />
             <TextField
               margin="normal"
@@ -90,10 +93,8 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              value={password} // Add value prop
+              onChange={(e) => setPassword(e.target.value)} // Add onChange handler
             />
             <Button
               type="submit"
@@ -104,10 +105,12 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-            <Grid item>
-              <Link to="/#/SignUpP"> {"Don't have an account? Sign Up"} </Link>
+              <Grid item>
+                <Link href="/front-end/#/SignUpP" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
           </Box>
         </Box>
       </Container>

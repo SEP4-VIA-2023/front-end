@@ -32,14 +32,14 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/Home/" element={<Authenticated />}>
+          <Route path="/Home" element={<Authenticated />}>
             <Route path="" element={<Home />} />
           </Route>
-          <Route path="/graph/" element={<Authenticated />}>
+          <Route path="/graph" element={<Authenticated />}>
             <Route path="" element={<Graph />} />
           </Route>
           <Route path="/SignUpP" element={<SignUpP />} />
-          <Route path="/profile/" element={<Authenticated />}>
+          <Route path="/profile" element={<Authenticated />}>
             <Route path="" element={<Profile />} />
           </Route>
         </Routes>
@@ -47,4 +47,5 @@ function App() {
     </div>
   );
 }
+
 export default App;

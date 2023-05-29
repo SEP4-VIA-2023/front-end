@@ -25,9 +25,10 @@ function Sidebar(props) {
 
   // Function to handle logout
   const logout = () => {
-    localStorage.removeItem('token'); // Clear the token from local storage
+    localStorage.clear(); // Purge the entire local storage
     navigate("/"); // Navigate to home page
   };
+  
 
   // Sidebar drawer with list of options
   const drawer = (
