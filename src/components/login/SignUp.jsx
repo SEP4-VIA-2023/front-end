@@ -1,4 +1,3 @@
-// Importing necessary libraries and components for the application
 import * as React from 'react';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -13,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-// Define the application's theme colors
+// Creating a theme for the application
 const theme = createTheme({
   palette: {
     primary: {
@@ -86,7 +85,7 @@ export default function SignUp() {
 
     if (response.ok) {
       console.log(data.message);
-      window.location = '#/'; // redirect to the home page
+      window.location = '/'; // redirect to the home page
     } else {
       if (data === "User with that email exists") {
         setEmailError(true);
@@ -185,7 +184,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#/" variant="body2">
+                <Link href="/front-end/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
