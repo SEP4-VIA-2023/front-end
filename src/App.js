@@ -6,36 +6,40 @@ import Graph from "./pages/graph/Graph";
 import SignUpP from "./pages/signup/Signup";
 import "./App.css";
 import { Outlet, useNavigate } from "react-router-dom";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom"; //Had to modify this again to work with github pages xd
+
+// Here we will check if user is logged in or not
+const checkAuth = () => {
+  const token = localStorage.getItem("token");
+  return token != null;
+};
 
 // This is our new Authenticated component
-const Authenticated = ({ token }) => {
+const Authenticated = () => {
   const navigate = useNavigate();
   React.useEffect(() => {
-    if (!token) {
+    if (!checkAuth()) {
       navigate("/");
     }
-  }, [navigate, token]);
+  }, [navigate]); // here we are using navigate from react-router-dom hooks
 
-  return token ? <Outlet /> : null;
+  return checkAuth() ? <Outlet /> : null;
 };
 
 function App() {
-  const token = localStorage.getItem("token");
-
   return (
     <div className="App">
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/Home/" element={<Authenticated token={token} />}>
+          <Route path="/Home" element={<Authenticated />}>
             <Route path="" element={<Home />} />
           </Route>
-          <Route path="/graph/" element={<Authenticated token={token} />}>
+          <Route path="/graph" element={<Authenticated />}>
             <Route path="" element={<Graph />} />
           </Route>
           <Route path="/SignUpP" element={<SignUpP />} />
-          <Route path="/profile/" element={<Authenticated token={token} />}>
+          <Route path="/profile" element={<Authenticated />}>
             <Route path="" element={<Profile />} />
           </Route>
         </Routes>

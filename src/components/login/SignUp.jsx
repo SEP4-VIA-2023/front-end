@@ -86,7 +86,7 @@ export default function SignUp() {
 
     if (response.ok) {
       console.log(data.message);
-      window.location = '/'; // redirect to the home page
+      window.location = '#/'; // redirect to the home page
     } else {
       if (data === "User with that email exists") {
         setEmailError(true);
