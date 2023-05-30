@@ -296,6 +296,7 @@ const Profile = () => {
                 name="minHumidity"
                 value={profile.minHumidity || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
             <div className="profileInfoItem">
@@ -306,6 +307,7 @@ const Profile = () => {
                 name="maxHumidity"
                 value={profile.maxHumidity || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
             <div className="profileInfoItem">
@@ -316,6 +318,7 @@ const Profile = () => {
                 name="minCo2"
                 value={profile.minCo2 || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
             <div className="profileInfoItem">
@@ -326,6 +329,7 @@ const Profile = () => {
                 name="maxCo2"
                 value={profile.maxCo2 || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
             <div className="profileInfoItem">
