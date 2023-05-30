@@ -63,6 +63,7 @@ const Profile = () => {
   
   const handleAdd = () => {
     console.log('Creating new profile');
+    // Creating a new profile using the values from the existing profile
     const newProfile = createNewProfile(
       profile.name,
       profile.minHumidity,
@@ -74,6 +75,7 @@ const Profile = () => {
       profile.servo
     );
   
+    // Making a POST request to the backend API endpoint to create a new profile
     axios
       .post("https://backend-esqp5xwphq-od.a.run.app/api/presets/create", newProfile, {
         headers: {
@@ -137,8 +139,10 @@ const Profile = () => {
             .then(response => {
               console.log('Axios get response:', response.data);  
               setProfiles(response.data);
+              // Finding the updated profile in the response data based on its id
               const updatedProfile = response.data.find(p => p.id === profile.id); // find the updated profile in the list
               setProfile(updatedProfile);
+              // Handling the response from the Axios request and updating the profiles and current profile
             })
             .catch(error => {
               console.error('Error:', error);
@@ -230,7 +234,9 @@ const Profile = () => {
   
 
   if (profile === null) {
+    // If the profile is null, display a message indicating no profiles are available
     return <div>No profiles available.</div>;
+    // If the profile is falsy (e.g., undefined, empty, or still loading), display a loading message
   } else if (!profile) {
     return <div>Loading...</div>;
   }
@@ -245,6 +251,7 @@ const Profile = () => {
         <div className="profileRightBottom">
         <div className="profileSelection">
             <label htmlFor="profileSelect">Select Profile:</label>
+             {/* Dropdown select element for profile selection */}
             <select
   id="profileSelect"
   className="profileSelect"
@@ -257,6 +264,7 @@ const Profile = () => {
       value={profile.id}
       className={profile.isActive ? "active" : ""}
     >
+      {/* Displaying the profile name and indicating if it's active */}
       {profile.name} {profile.isActive ? "(Active)" : ""}
     </option>
   ))}
