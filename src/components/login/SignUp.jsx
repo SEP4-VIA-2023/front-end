@@ -50,7 +50,10 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Checks if passwords match
-    setPasswordError(password !== confirmPassword);
+    if(password !== confirmPassword) {
+      setPasswordError(true);
+      return;
+    }
     // Validates email
     if (!validateEmail(email)) {
       setEmailError(true);
