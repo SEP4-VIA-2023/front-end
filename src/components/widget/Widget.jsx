@@ -1,12 +1,16 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 
+// Widget component to display environmental data
 const Widget = ({ data }) => {
+  // Destructure data prop to get individual data fields
   const { time, humidity, temperature, co2 } = data;
 
-  // Assuming time is an ISO 8601 timestamp
-  const date = new Date(time);
+  // Extract hour and minute from time string
+  const hour = time.slice(11,13);
+  const minute = time.slice(14,16);
 
+  // Return the main Widget component
   return (
     <Box
       sx={{
@@ -28,22 +32,24 @@ const Widget = ({ data }) => {
         },
       }}
     >
+      {/* Display the time */}
       <Typography variant="h5">
-        {date.toLocaleTimeString('en-US', { hour12: false })}
+        Time: {hour}:{minute}
       </Typography>
-      
-      <Typography variant="body1">
-        Date: {date.toLocaleDateString('en-US')}
-      </Typography>
-      
+
+      {/* Display humidity value */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="body1">Humidity:</Typography>
         <Typography variant="body1">{humidity}%</Typography>
       </Box>
+
+      {/* Display temperature value */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="body1">Temperature:</Typography>
         <Typography variant="body1">{temperature}&deg;C</Typography>
       </Box>
+
+      {/* Display CO2 value */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="body1">CO2:</Typography>
         <Typography variant="body1">{co2}ppm</Typography>
@@ -52,4 +58,5 @@ const Widget = ({ data }) => {
   );
 };
 
+// Export Widget component
 export default Widget;
